@@ -1,7 +1,7 @@
 <template>
-  <main>
-
-  </main>
+  <section>
+    REQUESTS
+  </section>
 </template>
 
 <script>

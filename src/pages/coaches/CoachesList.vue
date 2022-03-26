@@ -1,19 +1,8 @@
 <template>
   <section>
-    Filter
+    FILTER
   </section>
   <section>
-    List of Coaches
+    LIST OF COACHES
   </section>
 </template>
-
-<script>
-export default {
-
-}
-</script>
-
-
-<style>
-
-</style>

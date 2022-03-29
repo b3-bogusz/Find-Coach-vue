@@ -34,7 +34,6 @@ export default {
   },
   methods: {
     setFilter(event) {
-      console.log('event', event);
       const inputId = event.target.id;
       const isActive = event.target.checked;
       const updatedFilters = {

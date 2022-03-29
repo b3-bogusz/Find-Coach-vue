@@ -42,6 +42,7 @@ export default {
   components: {
     BaseButton
   },
+  emits: ['save-data'],
   data() {
     return {
       fistName: '',
@@ -60,7 +61,7 @@ export default {
         rate: this.rate,
         areas: this.areas
       }
-      console.log(formData);
+      this.$emit('save-data', formData);
     }
   }
 }

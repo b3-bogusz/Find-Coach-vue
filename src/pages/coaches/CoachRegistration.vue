@@ -2,7 +2,7 @@
   <section>
     <BaseCard>
       <h2>Register as a coach now!</h2>
-      <CoachForm></CoachForm>
+      <CoachForm @save-data="saveData"></CoachForm>
     </BaseCard>
   </section>
 </template>
@@ -11,7 +11,16 @@
 import CoachForm from './CoachForm';
 import BaseCard from '../../components/ui/BaseCard';
 export default {
-  components: { BaseCard, CoachForm }
+  components: {
+    BaseCard,
+    CoachForm
+  },
+  methods: {
+    saveData(data) {
+      this.$store.dispatch('coaches/registerCoach', data);
+      this.$router.replace('/coaches');
+    }
+  }
 }
 </script>
 

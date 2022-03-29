@@ -1,13 +1,24 @@
 export default {
-    registerCoach(context, data) {
+    async registerCoach(context, data) {
+        const userId = context.rootGetters.userId;
         const coachData = {
-            id: context.rootGetters.userId,
             firstName: data.first,
             lastName: data.last,
             areas: data.areas,
             description: data.desc,
             hourlyRate: data.rate
         };
-        context.commit('registerCoach', coachData);
+
+        const response = await fetch(`https://findcoach-23390-default-rtdb.europe-west1.firebasedatabase.app/coaches/${userId}.json`, {
+            method: 'PUT',
+            body: JSON.stringify(coachData)
+        });
+
+        console.log(response)
+
+        context.commit('registerCoach', {
+            ...coachData,
+            id: userId
+        });
     }
 }

@@ -1,10 +1,16 @@
 <template>
+  <BaseDialog :show="!!error" title="An error occurred" @close="handleError">
+    <p>{{ error }}</p>
+  </BaseDialog>
   <section>
     <BaseCard>
       <header>
-        <h2>Requests Recieved</h2>
+        <h2>Requests Received</h2>
       </header>
-      <ul v-if="hasRequests">
+      <div v-if="isLoading">
+        <BaseSpinner></BaseSpinner>
+      </div>
+      <ul v-else-if="hasRequests && !isLoading">
         <RequestItem
           v-for="req in receivedRequests"
           :key="req.id"
@@ -21,10 +27,20 @@
 <script>
 import BaseCard from '../../components/ui/BaseCard';
 import RequestItem from '../../components/requests/RequestItem';
+import BaseDialog from '../../components/ui/BaseDialog';
+import BaseSpinner from '../../components/ui/BaseSpinner';
 export default {
   components: {
+    BaseSpinner,
+    BaseDialog,
     RequestItem,
     BaseCard
+  },
+  data() {
+    return {
+      error: null,
+      isLoading: false,
+    }
   },
   computed: {
     receivedRequests() {
@@ -33,6 +49,23 @@ export default {
     hasRequests() {
       return this.$store.getters['requests/hasRequests']
     }
+  },
+  methods: {
+    async loadRequests() {
+      this.isLoading = true;
+      try {
+        await this.$store.dispatch('requests/fetchRequests')
+      } catch(error) {
+        this.error = error.message || 'Something went wrong'
+      }
+      this.isLoading = false;
+    },
+    handleError() {
+      this.error = null;
+    }
+  },
+  created() {
+    this.loadRequests();
   }
 }
 </script>

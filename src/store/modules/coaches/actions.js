@@ -14,7 +14,7 @@ export default {
             body: JSON.stringify(coachData)
         });
 
-        console.log(response)
+        console.log('new coach', response);
 
         context.commit('registerCoach', {
             ...coachData,
@@ -42,6 +42,6 @@ export default {
             };
             coaches.push(coach);
         }
-        context.commit('setCoaches', coaches)
+        context.commit('setCoaches', coaches);
     }
 }

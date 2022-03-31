@@ -10,7 +10,7 @@
         <input type="password" id="password" v-model.trim="password"/>
       </div>
       <p v-if="!formIsValid">Please enter a valid email and password (at least 6 characters).</p>
-      <BaseButton>{{ submitButtonCaption }}</BaseButton>]
+      <BaseButton>{{ submitButtonCaption }}</BaseButton>
       <BaseButton type="button" mode="flat" @click="switchAuthMode">{{ switchModeButtonCaption }}</BaseButton>
     </form>
   </BaseCard>
@@ -51,6 +51,15 @@ export default {
       if (this.email === '' || !this.email.includes('@') || this.password.length < 6) {
         this.formIsValid = false;
         return;
+      }
+
+      if (this.mode === 'login') {
+        //..
+      } else {
+        this.$store.dispatch('signup', {
+          email: this.email,
+          password: this.password
+        })
       }
     },
     switchAuthMode() {

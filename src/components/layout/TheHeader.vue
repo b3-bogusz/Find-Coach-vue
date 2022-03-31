@@ -14,16 +14,28 @@
         <li v-else>
           <router-link to="auth">Login</router-link>
         </li>
+        <li v-if="isLoggedIn">
+          <BaseButton @click="logout">
+            Logout
+          </BaseButton>
+        </li>
       </ul>
     </nav>
   </header>
 </template>
 
 <script>
+import BaseButton from '../ui/BaseButton';
 export default {
+  components: { BaseButton },
   computed: {
     isLoggedIn() {
-      return this.$store.getters('isAuthenticated')
+      return this.$store.getters.isAuthenticated
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout')
     }
   }
 }

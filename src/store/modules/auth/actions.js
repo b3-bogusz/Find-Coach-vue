@@ -1,7 +1,26 @@
 export default {
     async login(context, payload) {
+        return context.dispatch('auth', {
+            ...payload,
+            mode: 'login'
+        })
+    },
+    async signup(context, payload) {
+        return context.dispatch('auth', {
+            ...payload,
+            mode: 'signup'
+        })
+    },
+    async auth(context, payload) {
         const key = process.env.VUE_APP_API_KEY;
-        const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${key}`, {
+        const mode = payload.mode;
+        let url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${key}`;
+
+        if (mode === 'signup') {
+            url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`;
+        }
+
+        const response = await fetch(url, {
             method: 'POST',
             body: JSON.stringify({
                 email: payload.email,
@@ -15,6 +34,9 @@ export default {
             const error = new Error(responseData.message || 'Failed to authenticate');
             throw error;
         }
+
+        localStorage.setItem('token', responseData.idToken);
+        localStorage.setItem('userId', responseData.localId);
 
         context.commit('setUser', {
             token: responseData.idToken,
@@ -22,28 +44,17 @@ export default {
             tokenExpiration: responseData.expiresIn
         });
     },
-    async signup(context, payload) {
-        const key = process.env.VUE_APP_API_KEY;
-        const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${key}`, {
-            method: 'POST',
-            body: JSON.stringify({
-                email: payload.email,
-                password: payload.password,
-                returnSecureToken: true
+    autoLogin(context) {
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+
+        if (token && userId) {
+            context.commit('setUser', {
+                token: token,
+                userId: userId,
+                tokenExpiration: null
             })
-        })
-        const responseData = await response.json();
-
-        if (!response.ok) {
-            const error = new Error(responseData.message || 'Failed to authenticate');
-            throw error;
         }
-
-        context.commit('setUser', {
-            token: responseData.idToken,
-            userId: responseData.localId,
-            tokenExpiration: responseData.expiresIn
-        });
     },
     logout(context) {
         context.commit('setUser', {
